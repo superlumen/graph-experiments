@@ -86,6 +86,9 @@ rect {
       else {
         console.log('root node');
       }
+    },
+    removed: function(id) {
+      location.reload();
     }
   });
 
@@ -97,6 +100,9 @@ rect {
         target: allNodes[link.targetId]
       })
       restart();
+    },
+    removed: function(id) {
+      location.reload();
     }
   })
 
