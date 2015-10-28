@@ -58,6 +58,13 @@ rect {
       node = svg.selectAll(".node"),
       link = svg.selectAll(".link");
 
+  // Give the root node an ID
+  nodes[0]._id = 'xBRimZGbo4b9KXZR4';
+
+  // We need to store the actual node objects, accessible by ID
+  var allNodes = {};
+  allNodes['xBRimZGbo4b9KXZR4'] = nodes[0];
+
   var cursor = svg.append("circle")
       .attr("r", 30)
       .attr("transform", "translate(-100,-100)")
@@ -71,7 +78,7 @@ rect {
 
   function mousedown() {
     var point = d3.mouse(this),
-        node = {x: point[0], y: point[1]},
+        node = {x: point[0], y: point[1], _id: Random.id()},
         n = nodes.push(node);
 
     // add links to any nearby nodes
