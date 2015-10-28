@@ -77,9 +77,11 @@ rect {
   }
 
   function mousedown() {
-    var point = d3.mouse(this),
-        node = {x: point[0], y: point[1], _id: Random.id()},
-        n = nodes.push(node);
+    var point = d3.mouse(this);
+
+    var node = {x: point[0], y: point[1], _id: Random.id()};
+    var n = nodes.push(node);
+    allNodes[node._id] = node;
 
     // add links to any nearby nodes
     nodes.forEach(function(target) {
