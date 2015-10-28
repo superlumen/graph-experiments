@@ -31,6 +31,70 @@ rect {
 
   <script>
 
+
+  var fixtureNodes = [
+    {
+      "index": 0,
+      "weight": 1,
+      "x": 473.2682031835509,
+      "y": 237.78242445515852,
+      "px": 473.2725323544448,
+      "py": 237.79028198774245
+    },
+    {
+      "x": 487.997385670215,
+      "y": 264.51468120713264,
+      "index": 1,
+      "weight": 3,
+      "px": 487.9930955782151,
+      "py": 264.5068954853199,
+      "fixed": 0
+    }
+  ];
+  var fixtureLinks = [
+    {
+      "source": {
+        "x": 487.997385670215,
+        "y": 264.51468120713264,
+        "index": 1,
+        "weight": 3,
+        "px": 487.9930955782151,
+        "py": 264.5068954853199,
+        "fixed": 0
+      },
+      "target": {
+        "index": 0,
+        "weight": 1,
+        "x": 473.2682031835509,
+        "y": 237.78242445515852,
+        "px": 473.2725323544448,
+        "py": 237.79028198774245
+      }
+    },
+    {
+      "source": {
+        "x": 487.997385670215,
+        "y": 264.51468120713264,
+        "index": 1,
+        "weight": 3,
+        "px": 487.9930955782151,
+        "py": 264.5068954853199,
+        "fixed": 0
+      },
+      "target": {
+        "x": 487.997385670215,
+        "y": 264.51468120713264,
+        "index": 1,
+        "weight": 3,
+        "px": 487.9930955782151,
+        "py": 264.5068954853199,
+        "fixed": 0
+      }
+    }
+  ]
+
+
+
   var width = 960,
       height = 500;
 
@@ -72,6 +136,7 @@ rect {
   Nodes.find().observeChanges({
     added: function(id, doc){
       // delete doc._id;
+      console.log('pushing a node', doc);
       nodes.push(doc);
       // restart();
     }
@@ -83,7 +148,7 @@ rect {
       // debugger
       console.log('pushing link', doc);
       links.push(doc);
-      restart();
+      // restart();
     }
   });
 
@@ -92,6 +157,9 @@ rect {
   window.allLinks = [];
 
   function mousedown() {
+
+    force.stop();
+
     var point = d3.mouse(this),
         node = {x: point[0], y: point[1]},
         n = Nodes.insert(node);
@@ -117,9 +185,9 @@ rect {
           y = target.y - node.y;
       if (Math.sqrt(x * x + y * y) < 30) {
         // debugger
-        console.log('adding a new link');
-        // links.push({source: node, target: target});
-        window.allLinks.push({source: node, target: target});
+        // console.log('adding a new link');
+        links.push({source: node, target: target});
+        // window.allLinks.push({source: node, target: target});
         // console.log('inserting link', node, target);
         // Links.insert({source: node, target: target});
         // var link = {source: node, target: target};
