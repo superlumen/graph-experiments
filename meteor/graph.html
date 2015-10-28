@@ -31,70 +31,6 @@ rect {
 
   <script>
 
-
-  var fixtureNodes = [
-    {
-      "index": 0,
-      "weight": 1,
-      "x": 473.2682031835509,
-      "y": 237.78242445515852,
-      "px": 473.2725323544448,
-      "py": 237.79028198774245
-    },
-    {
-      "x": 487.997385670215,
-      "y": 264.51468120713264,
-      "index": 1,
-      "weight": 3,
-      "px": 487.9930955782151,
-      "py": 264.5068954853199,
-      "fixed": 0
-    }
-  ];
-  var fixtureLinks = [
-    {
-      "source": {
-        "x": 487.997385670215,
-        "y": 264.51468120713264,
-        "index": 1,
-        "weight": 3,
-        "px": 487.9930955782151,
-        "py": 264.5068954853199,
-        "fixed": 0
-      },
-      "target": {
-        "index": 0,
-        "weight": 1,
-        "x": 473.2682031835509,
-        "y": 237.78242445515852,
-        "px": 473.2725323544448,
-        "py": 237.79028198774245
-      }
-    },
-    {
-      "source": {
-        "x": 487.997385670215,
-        "y": 264.51468120713264,
-        "index": 1,
-        "weight": 3,
-        "px": 487.9930955782151,
-        "py": 264.5068954853199,
-        "fixed": 0
-      },
-      "target": {
-        "x": 487.997385670215,
-        "y": 264.51468120713264,
-        "index": 1,
-        "weight": 3,
-        "px": 487.9930955782151,
-        "py": 264.5068954853199,
-        "fixed": 0
-      }
-    }
-  ]
-
-
-
   var width = 960,
       height = 500;
 
@@ -133,70 +69,21 @@ rect {
     cursor.attr("transform", "translate(" + d3.mouse(this) + ")");
   }
 
-  Nodes.find().observeChanges({
-    added: function(id, doc){
-      // delete doc._id;
-      console.log('pushing a node', doc);
-      nodes.push(doc);
-      // restart();
-    }
-  });
-
-  Links.find().observeChanges({
-    added: function(id, doc) {
-      // delete doc._id;
-      // debugger
-      console.log('pushing link', doc);
-      links.push(doc);
-      // restart();
-    }
-  });
-
-  window.newNodesIndexes = [];
-  window.newLinksIndexes = [];
-  window.allLinks = [];
-
   function mousedown() {
-
-    force.stop();
-
     var point = d3.mouse(this),
         node = {x: point[0], y: point[1]},
-        n = Nodes.insert(node);
-        // n = nodes.push(node);
-        // console.log('mousedown', node, n, nodes[n-1]);
-
-        // We want to get this later
-        // window.newNodesIndexes.push(n-1);
-
-    var first = true;
+        n = nodes.push(node);
 
     // add links to any nearby nodes
     nodes.forEach(function(target) {
-
-      // Log inside the forEach, but only once
-      if (first) {
-        // console.log('in forEach', node, n, nodes[n-1], target);
-        first = false;
-      }
-
-
       var x = target.x - node.x,
           y = target.y - node.y;
       if (Math.sqrt(x * x + y * y) < 30) {
-        // debugger
-        // console.log('adding a new link');
         links.push({source: node, target: target});
-        // window.allLinks.push({source: node, target: target});
-        // console.log('inserting link', node, target);
-        // Links.insert({source: node, target: target});
-        // var link = {source: node, target: target};
-        // window.newLinksIndexes.push( links.push(link) - 1 );
-        // console.log('link', link, node);
       }
     });
 
-    // restart();
+    restart();
   }
 
   function tick() {
@@ -223,7 +110,6 @@ rect {
         .call(force.drag);
 
     force.start();
-    // debugger
   }
 
   </script>
