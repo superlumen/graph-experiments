@@ -60,15 +60,45 @@ rect {
 
   // Give the root node an ID
   nodes[0]._id = 'xBRimZGbo4b9KXZR4';
+  nodes[0].mongoId = 'xBRimZGbo4b9KXZR4';
 
   // We need to store the actual node objects, accessible by ID
   var allNodes = {};
   allNodes['xBRimZGbo4b9KXZR4'] = nodes[0];
+  var allLinks = [];
 
   var cursor = svg.append("circle")
       .attr("r", 30)
       .attr("transform", "translate(-100,-100)")
       .attr("class", "cursor");
+
+  Nodes.find().observeChanges({
+    added: function(id, node) {
+      console.log('nodes observer', node);
+      // Ignore our fixture node
+      if (id !== 'xBRimZGbo4b9KXZR4') {
+        // First, link the node to its id
+        allNodes[id] = node;
+        // Then, push the node into the nodes array
+        nodes.push(node);
+        restart();
+      }
+      else {
+        console.log('root node');
+      }
+    }
+  });
+
+  Links.find().observeChanges({
+    added: function(id, link) {
+      console.log('links observer', link);
+      links.push({
+        source: allNodes[link.sourceId],
+        target: allNodes[link.targetId]
+      })
+      restart();
+    }
+  })
 
   restart();
 
@@ -79,16 +109,28 @@ rect {
   function mousedown() {
     var point = d3.mouse(this);
 
-    var node = {x: point[0], y: point[1], _id: Random.id()};
-    var n = nodes.push(node);
-    allNodes[node._id] = node;
+    var newId = Random.id();
+
+    var node = {x: point[0], y: point[1], mongoId: newId, _id: newId};
+    allNodes[node.mongoId] = node;
+    // var n = nodes.push(node);
+    // Push the node into the collection
+    console.log('before insert');
+    Nodes.insert(node);
+    console.log('after insert');
 
     // add links to any nearby nodes
     nodes.forEach(function(target) {
+      console.log('forEach', target);
+      // allNodes[target._id] = target;
       var x = target.x - node.x,
           y = target.y - node.y;
       if (Math.sqrt(x * x + y * y) < 30) {
-        links.push({source: node, target: target});
+        // links.push({source: node, target: target});
+        // allLinks.push({sourceId: node._id, targetId: target._id});
+        console.log('before link insert');
+        Links.insert({sourceId: node.mongoId, targetId: target.mongoId});
+        console.log('after link insert');
       }
     });
 
